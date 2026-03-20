@@ -6,15 +6,20 @@ import (
 	"github.com/not-kamalesh/pismo-account/dto"
 )
 
-type Handler struct {
+//go:generate mockery --name=HealthCheckHandler --output=. --outpkg=healthcheck --filename=mock_healthcheck.go --structname=MockHealthCheck
+type HealthCheckHandler interface {
+	HealthCheck() *dto.HeathCheckResponse
+}
+
+type healthCheckHandler struct {
 	isShuttingDown atomic.Bool
 }
 
-func NewHandler() *Handler {
-	return &Handler{}
+func NewHandler() HealthCheckHandler {
+	return &healthCheckHandler{}
 }
 
-func (h *Handler) HealthCheck() *dto.HeathCheckResponse {
+func (h *healthCheckHandler) HealthCheck() *dto.HeathCheckResponse {
 	return &dto.HeathCheckResponse{
 		Status:  "OK",
 		Message: "I am Healthy, you chill",

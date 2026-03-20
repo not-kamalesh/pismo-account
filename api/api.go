@@ -11,26 +11,24 @@ import (
 )
 
 type APIHandler struct {
-	healthCheckHandler *healthcheck.Handler
+	healthCheckHandler healthcheck.HealthCheckHandler
 }
 
-func NewAPIHandler(healthcheckHandler *healthcheck.Handler) *APIHandler {
+func NewAPIHandler(healthcheckHandler healthcheck.HealthCheckHandler) *APIHandler {
 	apiHandler := &APIHandler{
 		healthCheckHandler: healthcheckHandler,
 	}
 	return apiHandler
 }
 
-func (api *APIHandler) HealthCheck(w http.ResponseWriter, r *http.Request) {
-	slog.Info("received request", "api", "HealthCheck")
-	resp := api.healthCheckHandler.HealthCheck()
-	api.writeResponse(w, "HealthCheck", resp, nil, false)
-}
-
+// writeResponse is a helper function which writes the response and error to the response writer
 func (api *APIHandler) writeResponse(w http.ResponseWriter, apiName string, apiResp interface{}, apiErr error, isNilResponse bool) {
 	w.Header().Set("Content-Type", "application/json")
 
 	switch {
+	case apiErr == nil && apiResp == nil && isNilResponse == false:
+		// This case is not expected, when it happens, return internal server serror with no body
+		w.WriteHeader(http.StatusInternalServerError)
 	case apiErr != nil:
 		// Default to internal server error status code
 		statusCode := http.StatusInternalServerError
@@ -39,6 +37,11 @@ func (api *APIHandler) writeResponse(w http.ResponseWriter, apiName string, apiR
 			statusCode = pErr.GetHTTPCode()
 			// Return only the PismoError struct as JSON, not the generic error interface
 			apiErr = pErr
+		} else {
+			apiErr = &errors.PismoError{
+				Code:    errors.PismoErrorCodeInternal,
+				Message: apiErr.Error(),
+			}
 		}
 		w.WriteHeader(statusCode)
 		if err := json.NewEncoder(w).Encode(apiErr); err != nil {
