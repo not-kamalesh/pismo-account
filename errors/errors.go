@@ -24,6 +24,10 @@ func (e *PismoError) Error() string {
 	return fmt.Sprintf("code: %s, message: %s, details: %s", e.Code, e.Message, e.Err.Error())
 }
 
+func (e *PismoError) GetCode() PismoErrorCode {
+	return e.Code
+}
+
 func (e *PismoError) GetHTTPCode() int {
 	if e.HTTPCode != 0 {
 		return e.HTTPCode
