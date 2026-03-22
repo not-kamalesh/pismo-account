@@ -1,7 +1,7 @@
 # Stage 1
 
 # build stage: compile the Go binary
-FROM golang:1.22-alpine AS builder
+FROM golang:1.25-alpine AS builder
 
 # work inside /app
 WORKDIR /app
@@ -30,6 +30,7 @@ RUN apk add --no-cache ca-certificates tzdata
 
 # copy the built binary from the build stage
 COPY --from=builder /bin/pismo-account /app/pismo-account
+COPY --from=builder /app/config/config.json /config/config.json
 
 # default location of the config file (overridable)
 ENV CONFIG_PATH=/config/config.json

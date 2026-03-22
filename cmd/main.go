@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
@@ -12,7 +13,10 @@ import (
 	"github.com/gorilla/mux"
 
 	"github.com/not-kamalesh/pismo-account/api"
+	"github.com/not-kamalesh/pismo-account/internal/account"
 	"github.com/not-kamalesh/pismo-account/internal/healthcheck"
+	"github.com/not-kamalesh/pismo-account/server"
+	"github.com/not-kamalesh/pismo-account/storage"
 )
 
 func main() {
@@ -22,19 +26,34 @@ func main() {
 	}))
 	slog.SetDefault(logger)
 
-	// Load Config @TODO
+	// Load Config from the file
+	appConfig, err := server.LoadConfig()
+	if err != nil {
+		// if load config fails, app can't run properly, so panic
+		panic(fmt.Sprintf("error occured on loading app config, err= %v", err))
+	}
 
-	// Init Database @TODO
+	// Init the client objects required for the server (ex: DB, Redis ...)
+	clients, err := server.InitClients(appConfig)
+	if err != nil {
+		// if the primary component initialisation fails, app can't run properly, so panic
+		panic(fmt.Sprintf("error occured on InitClients, err= %v", err))
+	}
 
-	// Init Clients @TODO
+	// Init the DAOs
+	accountDao := storage.NewAccountDao(clients.DB)
+
+	// Init Handlers
 	healthCheckHandler := healthcheck.NewHandler()
-
-	apiHandler := api.NewAPIHandler(healthCheckHandler)
+	accountHandler := account.NewHandler(accountDao)
+	apiHandler := api.NewAPIHandler(healthCheckHandler, accountHandler)
 
 	// Register Routes and Handlers
 	r := mux.NewRouter()
 	apiRouter := r.PathPrefix("").Subrouter()
 	apiRouter.HandleFunc("/health_check", apiHandler.HealthCheck).Methods(http.MethodGet)
+	apiRouter.HandleFunc("/accounts", apiHandler.CreateAccount).Methods(http.MethodPost)
+	apiRouter.HandleFunc("/accounts/{account_id}", apiHandler.GetAccount).Methods(http.MethodGet)
 
 	srv := &http.Server{
 		Addr:         ":8080",
