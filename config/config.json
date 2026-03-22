@@ -1,5 +1,9 @@
 {
-    "name" : "Kalmesh",
-    "age": 28,
-    "dream": "something"
+  "mysql": {
+    "host": "mysql",
+    "port": "3306",
+    "user": "pismo",
+    "password": "pismo_password",
+    "db_name": "pismo_db"
+  }
 }

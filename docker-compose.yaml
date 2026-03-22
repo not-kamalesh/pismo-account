@@ -1,8 +1,6 @@
-version: "3.9"
-
 services:
   mysql:
-    image: mysql:8.0
+    image: mysql:8.4.8
     environment:
       MYSQL_ROOT_PASSWORD: root_password
       MYSQL_DATABASE: pismo_db
@@ -12,6 +10,12 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot_password"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 40s
 
   pismo-account:
     build:

@@ -1,0 +1,14 @@
+### Health Check
+curl -X GET 'http://localhost:8080/health_check'
+
+### Create Account
+curl -sS -X POST 'http://localhost:8080/accounts' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "msg_id": "4e01cff74f2585cbcdb38f66fb74573",
+    "document_number": "123456789",
+    "currency": "INR"
+  }'
+
+### Get Account by ID
+curl -X GET 'http://localhost:8080/accounts/1?msgID=4e01cff74f2585cbcdb38f66fb74573'

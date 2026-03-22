@@ -7,16 +7,19 @@ import (
 	"net/http"
 
 	"github.com/not-kamalesh/pismo-account/errors"
+	"github.com/not-kamalesh/pismo-account/internal/account"
 	"github.com/not-kamalesh/pismo-account/internal/healthcheck"
 )
 
 type APIHandler struct {
 	healthCheckHandler healthcheck.HealthCheckHandler
+	accountHandler     account.AccountHandler
 }
 
-func NewAPIHandler(healthcheckHandler healthcheck.HealthCheckHandler) *APIHandler {
+func NewAPIHandler(healthcheckHandler healthcheck.HealthCheckHandler, accountHandler account.AccountHandler) *APIHandler {
 	apiHandler := &APIHandler{
 		healthCheckHandler: healthcheckHandler,
+		accountHandler:     accountHandler,
 	}
 	return apiHandler
 }

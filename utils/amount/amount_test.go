@@ -179,10 +179,6 @@ func TestAdd(t *testing.T) {
 	}
 }
 
-//
-// --- Test Sub ---
-//
-
 func TestSub(t *testing.T) {
 	tests := []struct {
 		name        string
@@ -190,7 +186,7 @@ func TestSub(t *testing.T) {
 		b           string
 		currencyA   string
 		currencyB   string
-		expected    string
+		expected    Decimal
 		expectError bool
 	}{
 		{
@@ -199,7 +195,10 @@ func TestSub(t *testing.T) {
 			b:         "2.25",
 			currencyA: "USD",
 			currencyB: "USD",
-			expected:  "8.25",
+			expected: Decimal{
+				Value:    decimal.RequireFromString("8.25"),
+				Currency: "USD",
+			},
 		},
 		{
 			name:      "negative result",
@@ -207,7 +206,10 @@ func TestSub(t *testing.T) {
 			b:         "10.00",
 			currencyA: "USD",
 			currencyB: "USD",
-			expected:  "-5.00",
+			expected: Decimal{
+				Value:    decimal.RequireFromString("-5.00"),
+				Currency: "USD",
+			},
 		},
 		{
 			name:        "currency mismatch",
@@ -232,10 +234,7 @@ func TestSub(t *testing.T) {
 			}
 
 			assert.NoError(t, err)
-			assert.True(t,
-				result.Value.Equal(decimal.RequireFromString(tt.expected)),
-				"value mismatch",
-			)
+			assert.Equal(t, tt.expected, result)
 		})
 	}
 }
