@@ -17,6 +17,7 @@ func (api *APIHandler) CreateAccount(w http.ResponseWriter, r *http.Request) {
 		api.writeResponse(w, "CreateAccount", nil, err, false)
 		return
 	}
+	slog.Debug("parsed request", "api", "CreateAccount", "request", req)
 
 	resp, err := api.accountHandler.Create(ctx, req)
 
@@ -33,6 +34,7 @@ func (api *APIHandler) GetAccount(w http.ResponseWriter, r *http.Request) {
 		api.writeResponse(w, "GetAccount", nil, err, false)
 		return
 	}
+	slog.Debug("parsed request", "api", "GetAccount", "request", req)
 
 	resp, err := api.accountHandler.Get(ctx, req)
 

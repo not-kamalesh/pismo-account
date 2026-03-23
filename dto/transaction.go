@@ -33,26 +33,28 @@ func (r *CreateTransactionRequest) Parse(httpReq *http.Request) error {
 
 func (r *CreateTransactionRequest) Validate() error {
 	if r.MsgID == "" {
-		return errors.ErrInvalidArgument
+		return errors.ErrInvalidMsgID
 	}
 	if r.ReferenceID == "" {
-		return errors.ErrInvalidArgument
+		return errors.ErrInvalidReferenceID
 	}
 	if r.AccountID == 0 {
-		return errors.ErrInvalidArgument
+		return errors.ErrInvalidAccountID
 	}
 	// Amount is expected to be positive only, based on the operation type
 	// it will be recorded accordingly
 	if r.Amount <= 0 {
-		return errors.ErrInvalidArgument
+		return errors.ErrInvalidAmount
 	}
 	if !r.OperationTypeID.IsValid() {
-		return errors.ErrInvalidArgument
+		return errors.ErrInvalidOperationType
 	}
 
 	return nil
 }
 
 type CreateTransactionResponse struct {
-	TransactionID int64 `json:"transaction_id"`
+	TransactionID int64                   `json:"transaction_id"`
+	Status        types.TransactionStatus `json:"status"`
+	StatusMessage string                  `json:"status_message"`
 }

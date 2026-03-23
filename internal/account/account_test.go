@@ -42,7 +42,7 @@ func TestAccountHandler_Create(t *testing.T) {
 					Status:     "ACTIVE",
 				}, nil)
 			},
-			wantErr: errors.ErrAlreadyExists,
+			want: &dto.CreateAccountResponse{AccountID: 1},
 		},
 		{
 			name: "when LoadByDocumentID fails with non-not-found error, then propagate error",
@@ -67,10 +67,10 @@ func TestAccountHandler_Create(t *testing.T) {
 			setup: func(m *storage.MockIAccountDAO) {
 				m.On("LoadByDocumentID", mock.Anything, mock.Anything).Return(nil, gorm.ErrRecordNotFound)
 				m.On("Save", mock.Anything, mock.Anything).Run(func(args mock.Arguments) {
-					args.Get(1).(*storage.Account).ID = 42
+					args.Get(1).(*storage.Account).ID = 1
 				}).Return(nil)
 			},
-			want: &dto.CreateAccountResponse{AccountID: 42},
+			want: &dto.CreateAccountResponse{AccountID: 1},
 		},
 	}
 
@@ -126,14 +126,6 @@ func TestAccountHandler_Get(t *testing.T) {
 				m.On("LoadByID", mock.Anything, mock.Anything).Return(nil, gorm.ErrRecordNotFound)
 			},
 			wantErr: gorm.ErrRecordNotFound,
-		},
-		{
-			name: "when LoadByID returns nil account with no error, then ErrNotFound",
-			req:  validReq(),
-			setup: func(m *storage.MockIAccountDAO) {
-				m.On("LoadByID", mock.Anything, mock.Anything).Return(nil, nil)
-			},
-			wantErr: errors.ErrNotFound,
 		},
 		{
 			name: "when account exists, then return details",

@@ -32,13 +32,13 @@ func (r *CreateAccountRequest) Parse(httpReq *http.Request) error {
 
 func (r *CreateAccountRequest) Validate() error {
 	if r.MsgID == "" {
-		return errors.ErrInvalidArgument
+		return errors.ErrInvalidMsgID
 	}
 	if r.DocumentNumber == "" {
-		return errors.ErrInvalidArgument
+		return errors.ErrInvalidDocumentID
 	}
 	if len(r.Currency) != 3 {
-		return errors.ErrInvalidArgument
+		return errors.ErrInvalidCurrency
 	}
 	return nil
 }
@@ -77,10 +77,10 @@ func (r *GetAccountRequest) Parse(httpReq *http.Request) error {
 
 func (r *GetAccountRequest) Validate() error {
 	if r.MsgID == "" {
-		return errors.ErrInvalidArgument
+		return errors.ErrInvalidMsgID
 	}
 	if r.AccountID == 0 {
-		return errors.ErrInvalidArgument
+		return errors.ErrInvalidAccountID
 	}
 	return nil
 }

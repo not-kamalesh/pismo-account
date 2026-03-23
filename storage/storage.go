@@ -2,6 +2,7 @@ package storage
 
 import (
 	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/not-kamalesh/pismo-account/errors"
@@ -24,11 +25,13 @@ func NewGormDB(cfg *Config) (*gorm.DB, error) {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.DBName)
 	db, err := gorm.Open(mysql.Open(dsn))
 	if err != nil {
+		slog.Error("failed to open mysql sesssion", "error", err)
 		return nil, err
 	}
 
 	sqlDB, err := db.DB()
 	if err != nil {
+		slog.Error("failed to establish mysql db connection", "error", err)
 		return nil, err
 	}
 

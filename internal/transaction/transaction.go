@@ -2,7 +2,9 @@ package transaction
 
 import (
 	"context"
+	"log/slog"
 
+	"github.com/not-kamalesh/pismo-account/common/types"
 	"github.com/not-kamalesh/pismo-account/dto"
 	"github.com/not-kamalesh/pismo-account/storage"
 	"github.com/not-kamalesh/pismo-account/utils/amount"
@@ -30,18 +32,32 @@ func (h *transactionHandler) Create(ctx context.Context, req *dto.CreateTransact
 
 	// Load the transaction based on reference_id, if exists return txID
 	txn, loadErr := h.transactionDAO.LoadByReferenceID(ctx, req.ReferenceID)
+	// any db error apart from ErrRecordNotFound, return error
 	if loadErr != nil && loadErr != gorm.ErrRecordNotFound {
+		slog.Warn("error occured on loading transaction by reference_id", "reference_id", req.ReferenceID, "error", loadErr)
 		return nil, loadErr
 	}
+	// if transaction exists, return result
 	if txn != nil {
+		slog.Info("transaction already exists", "reference_id", req.ReferenceID)
 		return &dto.CreateTransactionResponse{
 			TransactionID: txn.ID,
+			Status:        types.Success,
 		}, nil
 	}
+
+	// When transaction not exists, create it
 
 	// Load the account based on account ID
 	account, loadErr := h.accountDAO.LoadByID(ctx, req.AccountID)
 	if loadErr != nil {
+		if loadErr == gorm.ErrRecordNotFound {
+			return &dto.CreateTransactionResponse{
+				Status:        types.Failed,
+				StatusMessage: "Account Not Found",
+			}, nil
+		}
+		slog.Warn("error occured on loading account by account_id", "account_id", req.AccountID, "error", loadErr)
 		return nil, loadErr
 	}
 
@@ -59,6 +75,7 @@ func (h *transactionHandler) Create(ctx context.Context, req *dto.CreateTransact
 
 	saveErr := h.transactionDAO.Save(ctx, newTxn)
 	if saveErr != nil {
+		slog.Warn("error occured on saving new transaction", "reference_id", req.ReferenceID, "error", saveErr)
 		return nil, saveErr
 	}
 

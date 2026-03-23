@@ -61,14 +61,14 @@ func TestCreateAccountRequest_Validate(t *testing.T) {
 		{
 			name:    "when request is empty, then return validation error",
 			req:     &CreateAccountRequest{},
-			wantErr: errors.ErrInvalidArgument,
+			wantErr: errors.ErrInvalidMsgID,
 		},
 		{
 			name: "when request is invalid, then return validation error",
 			req: &CreateAccountRequest{
 				MsgID: "test_msgID",
 			},
-			wantErr: errors.ErrInvalidArgument,
+			wantErr: errors.ErrInvalidDocumentID,
 		},
 		{
 			name: "when currency length is not three, then return validation error",
@@ -77,7 +77,7 @@ func TestCreateAccountRequest_Validate(t *testing.T) {
 				DocumentNumber: "1234",
 				Currency:       "US",
 			},
-			wantErr: errors.ErrInvalidArgument,
+			wantErr: errors.ErrInvalidCurrency,
 		},
 		{
 			name: "when request is valid, then validate succeeds",
@@ -162,14 +162,14 @@ func TestGetAccountRequest_Validate(t *testing.T) {
 		{
 			name:    "when request is empty, then return validation error",
 			req:     &GetAccountRequest{},
-			wantErr: errors.ErrInvalidArgument,
+			wantErr: errors.ErrInvalidMsgID,
 		},
 		{
 			name: "when request is invalid, then return validation error",
 			req: &GetAccountRequest{
 				MsgID: "test_msgID",
 			},
-			wantErr: errors.ErrInvalidArgument,
+			wantErr: errors.ErrInvalidAccountID,
 		},
 		{
 			name: "when request is valid, then validate succeeds",

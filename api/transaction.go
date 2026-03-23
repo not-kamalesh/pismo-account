@@ -17,6 +17,7 @@ func (api *APIHandler) CreateTransaction(w http.ResponseWriter, r *http.Request)
 		api.writeResponse(w, "CreateTransaction", nil, err, false)
 		return
 	}
+	slog.Debug("parsed request", "api", "CreateTransaction", "request", req)
 
 	resp, err := api.transactionHandler.Create(ctx, req)
 

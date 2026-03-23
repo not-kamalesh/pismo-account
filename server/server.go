@@ -33,7 +33,7 @@ func InitClients(appConf *AppConfig) (*Clients, error) {
 		slog.Info("Database migrations failed", "error", err)
 		return nil, err
 	}
-	slog.Info("Database migrated")
+	slog.Info("Database migrations applied")
 
 	return &Clients{DB: db}, nil
 }

@@ -47,10 +47,10 @@ func TestAPIHandler_CreateAccount(t *testing.T) {
 				Currency:       "INR",
 			},
 			setUpMocks: func(mockAccount *account.MockAccountHandler) {
-				mockAccount.On("Create", mock.Anything, mock.Anything).Return(nil, errors.ErrAlreadyExists).Once()
+				mockAccount.On("Create", mock.Anything, mock.Anything).Return(nil, errors.ErrInternal).Once()
 			},
-			expectedStatus: http.StatusConflict,
-			expectedBody:   `{"code":"ALREADY_EXISTS","message":"Resource already exists"}`,
+			expectedStatus: http.StatusInternalServerError,
+			expectedBody:   `{"code":"INTERNAL","message":"Internal server error"}`,
 		},
 		{
 			name: "when request is valid and handler returns response, then write response",
