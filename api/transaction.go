@@ -19,7 +19,8 @@ func (api *APIHandler) CreateTransaction(w http.ResponseWriter, r *http.Request)
 	}
 	slog.Debug("parsed request", "api", "CreateTransaction", "request", req)
 
-	resp, err := api.transactionHandler.Create(ctx, req)
-
+	resp, err := api.idempotencyMgr.Execute(req.ReferenceID, req.Hash(), func() (interface{}, error) {
+		return api.transactionHandler.Create(ctx, req)
+	})
 	api.writeResponse(w, "CreateTransaction", resp, err, false)
 }

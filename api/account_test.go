@@ -79,7 +79,7 @@ func TestAPIHandler_CreateAccount(t *testing.T) {
 			if tt.setUpMocks != nil {
 				tt.setUpMocks(mockAccountHandler)
 			}
-			api := NewAPIHandler(nil, mockAccountHandler, nil)
+			api := NewAPIHandler(nil, mockAccountHandler, nil, nil)
 			api.CreateAccount(respWriter, httpReq)
 
 			// assert the expectations
@@ -169,7 +169,7 @@ func TestAPIHandler_GetAccount(t *testing.T) {
 			if tt.setUpMocks != nil {
 				tt.setUpMocks(mockAccountHandler)
 			}
-			api := NewAPIHandler(nil, mockAccountHandler, nil)
+			api := NewAPIHandler(nil, mockAccountHandler, nil, nil)
 			api.GetAccount(respWriter, httpReq)
 
 			// assert the expectations

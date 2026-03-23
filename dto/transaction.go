@@ -1,6 +1,8 @@
 package dto
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"log/slog"
 	"net/http"
@@ -51,6 +53,13 @@ func (r *CreateTransactionRequest) Validate() error {
 	}
 
 	return nil
+}
+
+func (r *CreateTransactionRequest) Hash() string {
+	// @TODO selective hashing on few fields , for now doing full request hash
+	bytes, _ := json.Marshal(r)
+	sum := sha256.Sum256(bytes)
+	return hex.EncodeToString(sum[:])
 }
 
 type CreateTransactionResponse struct {

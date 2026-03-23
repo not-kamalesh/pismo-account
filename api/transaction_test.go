@@ -82,7 +82,7 @@ func TestAPIHandler_CreateTransaction(t *testing.T) {
 			if tt.setUpMocks != nil {
 				tt.setUpMocks(mockTransactionHandler)
 			}
-			api := NewAPIHandler(nil, nil, mockTransactionHandler)
+			api := NewAPIHandler(nil, nil, mockTransactionHandler, nil)
 			api.CreateTransaction(respWriter, httpReq)
 
 			// assert the expectations
