@@ -43,7 +43,7 @@ func TestAPIHandler_HealthCheck(t *testing.T) {
 			if tt.setUpMocks != nil {
 				tt.setUpMocks(mockHC)
 			}
-			api := NewAPIHandler(mockHC, nil)
+			api := NewAPIHandler(mockHC, nil, nil)
 			api.HealthCheck(respWriter, httpReq)
 
 			// assert the expectations

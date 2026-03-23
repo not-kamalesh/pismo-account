@@ -15,6 +15,7 @@ import (
 	"github.com/not-kamalesh/pismo-account/api"
 	"github.com/not-kamalesh/pismo-account/internal/account"
 	"github.com/not-kamalesh/pismo-account/internal/healthcheck"
+	"github.com/not-kamalesh/pismo-account/internal/transaction"
 	"github.com/not-kamalesh/pismo-account/server"
 	"github.com/not-kamalesh/pismo-account/storage"
 )
@@ -42,11 +43,13 @@ func main() {
 
 	// Init the DAOs
 	accountDao := storage.NewAccountDao(clients.DB)
+	transactionDao := storage.NewTransactionDao(clients.DB)
 
 	// Init Handlers
 	healthCheckHandler := healthcheck.NewHandler()
 	accountHandler := account.NewHandler(accountDao)
-	apiHandler := api.NewAPIHandler(healthCheckHandler, accountHandler)
+	transctionHandler := transaction.NewHandler(accountDao, transactionDao)
+	apiHandler := api.NewAPIHandler(healthCheckHandler, accountHandler, transctionHandler)
 
 	// Register Routes and Handlers
 	r := mux.NewRouter()
@@ -54,6 +57,7 @@ func main() {
 	apiRouter.HandleFunc("/health_check", apiHandler.HealthCheck).Methods(http.MethodGet)
 	apiRouter.HandleFunc("/accounts", apiHandler.CreateAccount).Methods(http.MethodPost)
 	apiRouter.HandleFunc("/accounts/{account_id}", apiHandler.GetAccount).Methods(http.MethodGet)
+	apiRouter.HandleFunc("/transactions", apiHandler.CreateTransaction).Methods(http.MethodPost)
 
 	srv := &http.Server{
 		Addr:         ":8080",
