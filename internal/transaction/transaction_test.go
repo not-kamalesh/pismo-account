@@ -5,6 +5,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/not-kamalesh/pismo-account/common/types"
 	"github.com/not-kamalesh/pismo-account/dto"
 	"github.com/not-kamalesh/pismo-account/storage"
 	"github.com/stretchr/testify/assert"
@@ -33,7 +34,7 @@ func TestTransactionHandler_Create(t *testing.T) {
 				transactionDao.On("LoadByReferenceID", mock.Anything, mock.Anything).
 					Return(&storage.Transaction{ID: 123}, nil).Once()
 			},
-			expectedResp: &dto.CreateTransactionResponse{TransactionID: 123},
+			expectedResp: &dto.CreateTransactionResponse{TransactionID: 123, Status: types.Success},
 			expectedErr:  nil,
 		},
 		{
@@ -52,7 +53,7 @@ func TestTransactionHandler_Create(t *testing.T) {
 			expectedErr:  errors.New("db error"),
 		},
 		{
-			name: "when the account id not exists, then return error",
+			name: "when the account id not exists, then return failed response",
 			req: &dto.CreateTransactionRequest{
 				ReferenceID:     "ref3",
 				AccountID:       999,
@@ -63,10 +64,10 @@ func TestTransactionHandler_Create(t *testing.T) {
 				transactionDao.On("LoadByReferenceID", mock.Anything, mock.Anything).
 					Return(nil, gorm.ErrRecordNotFound).Once()
 				accountDao.On("LoadByID", mock.Anything, mock.Anything).
-					Return(nil, errors.New("not found")).Once()
+					Return(nil, gorm.ErrRecordNotFound).Once()
 			},
-			expectedResp: nil,
-			expectedErr:  errors.New("not found"),
+			expectedResp: &dto.CreateTransactionResponse{Status: types.Failed, StatusMessage: "Account Not Found"},
+			expectedErr:  nil,
 		},
 		{
 			name: "when the transaction.Save failes with a error, return error",

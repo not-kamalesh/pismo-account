@@ -30,7 +30,7 @@ func NewAPIHandler(healthcheckHandler healthcheck.HealthCheckHandler, accountHan
 // writeResponse is a helper function which writes the response and error to the response writer
 func (api *APIHandler) writeResponse(w http.ResponseWriter, apiName string, apiResp interface{}, apiErr error, isNilResponse bool) {
 	w.Header().Set("Content-Type", "application/json")
-
+	slog.Debug("API Response", "apiName", apiName, "resp", apiResp, "error", apiErr)
 	switch {
 	case apiErr == nil && apiResp == nil && isNilResponse == false:
 		// This case is not expected, when it happens, return internal server serror with no body

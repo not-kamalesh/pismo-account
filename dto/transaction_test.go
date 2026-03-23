@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/not-kamalesh/pismo-account/common/types"
+	"github.com/not-kamalesh/pismo-account/errors"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -80,7 +81,7 @@ func TestCreateTransactionRequest_Validate(t *testing.T) {
 	tests := []struct {
 		name    string
 		req     CreateTransactionRequest
-		wantErr bool
+		wantErr error
 	}{
 		{
 			name: "valid",
@@ -91,7 +92,7 @@ func TestCreateTransactionRequest_Validate(t *testing.T) {
 				OperationTypeID: types.OperationType(1),
 				Amount:          20.0,
 			},
-			wantErr: false,
+			wantErr: nil,
 		},
 		{
 			name: "missing msg_id",
@@ -101,7 +102,7 @@ func TestCreateTransactionRequest_Validate(t *testing.T) {
 				OperationTypeID: types.OperationType(1),
 				Amount:          20.0,
 			},
-			wantErr: true,
+			wantErr: errors.ErrInvalidMsgID,
 		},
 		{
 			name: "missing reference_id",
@@ -111,7 +112,7 @@ func TestCreateTransactionRequest_Validate(t *testing.T) {
 				OperationTypeID: types.OperationType(1),
 				Amount:          20.0,
 			},
-			wantErr: true,
+			wantErr: errors.ErrInvalidReferenceID,
 		},
 		{
 			name: "zero account_id",
@@ -121,7 +122,7 @@ func TestCreateTransactionRequest_Validate(t *testing.T) {
 				OperationTypeID: types.OperationType(1),
 				Amount:          20.0,
 			},
-			wantErr: true,
+			wantErr: errors.ErrInvalidAccountID,
 		},
 		{
 			name: "amount not positive",
@@ -132,7 +133,7 @@ func TestCreateTransactionRequest_Validate(t *testing.T) {
 				OperationTypeID: types.OperationType(1),
 				Amount:          0,
 			},
-			wantErr: true,
+			wantErr: errors.ErrInvalidAmount,
 		},
 		{
 			name: "invalid operation_type",
@@ -143,15 +144,16 @@ func TestCreateTransactionRequest_Validate(t *testing.T) {
 				OperationTypeID: types.OperationType(100),
 				Amount:          10,
 			},
-			wantErr: true,
+			wantErr: errors.ErrInvalidOperationType,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := tt.req.Validate()
-			if tt.wantErr {
+			if tt.wantErr != nil {
 				assert.Error(t, err)
+				assert.Equal(t, tt.wantErr, err)
 			} else {
 				assert.NoError(t, err)
 			}

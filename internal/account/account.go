@@ -2,9 +2,9 @@ package account
 
 import (
 	"context"
+	"log/slog"
 
 	"github.com/not-kamalesh/pismo-account/dto"
-	"github.com/not-kamalesh/pismo-account/errors"
 	"github.com/not-kamalesh/pismo-account/storage"
 	"gorm.io/gorm"
 )
@@ -30,10 +30,13 @@ func (h *accountHandler) Create(ctx context.Context, req *dto.CreateAccountReque
 	// Check if an account already exists with the given document number
 	account, loadErr := h.dao.LoadByDocumentID(ctx, req.DocumentNumber)
 	if loadErr != nil && loadErr != gorm.ErrRecordNotFound {
+		slog.Warn("error occured on loading account by documentID", "error", loadErr)
 		return nil, loadErr
 	}
 	if account != nil {
-		return nil, errors.ErrAlreadyExists
+		return &dto.CreateAccountResponse{
+			AccountID: account.ID,
+		}, nil
 	}
 
 	// Save the account record
@@ -44,6 +47,7 @@ func (h *accountHandler) Create(ctx context.Context, req *dto.CreateAccountReque
 	}
 	saveErr := h.dao.Save(ctx, newAccount)
 	if saveErr != nil {
+		slog.Warn("error occured on save account", "error", saveErr)
 		return nil, saveErr
 	}
 
@@ -56,10 +60,8 @@ func (h *accountHandler) Get(ctx context.Context, req *dto.GetAccountRequest) (*
 
 	account, loadErr := h.dao.LoadByID(ctx, req.AccountID)
 	if loadErr != nil {
+		slog.Warn("error occured on loading account by accountID", "error", loadErr)
 		return nil, loadErr
-	}
-	if account == nil {
-		return nil, errors.ErrNotFound
 	}
 
 	return &dto.GetAccountResponse{
