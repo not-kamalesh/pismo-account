@@ -42,5 +42,5 @@ func NewGormDB(cfg *Config) (*gorm.DB, error) {
 }
 
 func RunAutoMigrations(db *gorm.DB) error {
-	return db.AutoMigrate(&Account{})
+	return db.AutoMigrate(&Account{}, &Transaction{})
 }

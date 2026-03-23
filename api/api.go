@@ -9,17 +9,20 @@ import (
 	"github.com/not-kamalesh/pismo-account/errors"
 	"github.com/not-kamalesh/pismo-account/internal/account"
 	"github.com/not-kamalesh/pismo-account/internal/healthcheck"
+	"github.com/not-kamalesh/pismo-account/internal/transaction"
 )
 
 type APIHandler struct {
 	healthCheckHandler healthcheck.HealthCheckHandler
 	accountHandler     account.AccountHandler
+	transactionHandler transaction.TransactionHandler
 }
 
-func NewAPIHandler(healthcheckHandler healthcheck.HealthCheckHandler, accountHandler account.AccountHandler) *APIHandler {
+func NewAPIHandler(healthcheckHandler healthcheck.HealthCheckHandler, accountHandler account.AccountHandler, transactionHandler transaction.TransactionHandler) *APIHandler {
 	apiHandler := &APIHandler{
 		healthCheckHandler: healthcheckHandler,
 		accountHandler:     accountHandler,
+		transactionHandler: transactionHandler,
 	}
 	return apiHandler
 }
