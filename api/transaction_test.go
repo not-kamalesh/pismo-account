@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/not-kamalesh/pismo-account/common/types"
 	"github.com/not-kamalesh/pismo-account/dto"
 	"github.com/not-kamalesh/pismo-account/errors"
 	"github.com/not-kamalesh/pismo-account/internal/transaction"
@@ -27,7 +28,7 @@ func TestAPIHandler_CreateTransaction(t *testing.T) {
 			name:           "when request is empty, then write validation error",
 			request:        &dto.CreateTransactionRequest{},
 			expectedStatus: http.StatusBadRequest,
-			expectedBody:   `{"code":"INVALID_ARGUMENT","message":"Invalid argument provided"}`,
+			expectedBody:   `{"code":"INVALID_ARGUMENT","message":"Invalid msg_id"}`,
 		},
 		{
 			name: "when request is invalid, then write validation error",
@@ -35,7 +36,7 @@ func TestAPIHandler_CreateTransaction(t *testing.T) {
 				MsgID: "test_msgID",
 			},
 			expectedStatus: http.StatusBadRequest,
-			expectedBody:   `{"code":"INVALID_ARGUMENT","message":"Invalid argument provided"}`,
+			expectedBody:   `{"code":"INVALID_ARGUMENT","message":"Invalid reference_id"}`,
 		},
 		{
 			name: "when request is valid and handler returns error, then write error",
@@ -62,10 +63,10 @@ func TestAPIHandler_CreateTransaction(t *testing.T) {
 				OperationTypeID: 1,
 			},
 			setUpMocks: func(mockTransactionHandler *transaction.MockTransactionHandler) {
-				mockTransactionHandler.On("Create", mock.Anything, mock.Anything).Return(&dto.CreateTransactionResponse{TransactionID: 1}, nil).Once()
+				mockTransactionHandler.On("Create", mock.Anything, mock.Anything).Return(&dto.CreateTransactionResponse{TransactionID: 1, Status: types.Success}, nil).Once()
 			},
 			expectedStatus: http.StatusOK,
-			expectedBody:   `{"transaction_id":1}`,
+			expectedBody:   `{"transaction_id":1, "status": "success"}`,
 		},
 	}
 

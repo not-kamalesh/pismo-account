@@ -56,5 +56,5 @@ func (r *CreateTransactionRequest) Validate() error {
 type CreateTransactionResponse struct {
 	TransactionID int64                   `json:"transaction_id"`
 	Status        types.TransactionStatus `json:"status"`
-	StatusMessage string                  `json:"status_message"`
+	StatusMessage string                  `json:"status_message,omitempty"`
 }

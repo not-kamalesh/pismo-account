@@ -29,7 +29,7 @@ func TestAPIHandler_CreateAccount(t *testing.T) {
 			name:           "when request is empty, then write validation error",
 			request:        &dto.CreateAccountRequest{},
 			expectedStatus: http.StatusBadRequest,
-			expectedBody:   `{"code":"INVALID_ARGUMENT","message":"Invalid argument provided"}`,
+			expectedBody:   `{"code":"INVALID_ARGUMENT","message":"Invalid msg_id"}`,
 		},
 		{
 			name: "when request is invalid, then write validation error",
@@ -37,7 +37,7 @@ func TestAPIHandler_CreateAccount(t *testing.T) {
 				MsgID: "test_msgID",
 			},
 			expectedStatus: http.StatusBadRequest,
-			expectedBody:   `{"code":"INVALID_ARGUMENT","message":"Invalid argument provided"}`,
+			expectedBody:   `{"code":"INVALID_ARGUMENT","message":"Invalid document_id"}`,
 		},
 		{
 			name: "when request is valid and handler returns error, then write error",
@@ -107,7 +107,7 @@ func TestAPIHandler_GetAccount(t *testing.T) {
 			name:           "when request is empty, then write validation error",
 			request:        &dto.GetAccountRequest{},
 			expectedStatus: http.StatusBadRequest,
-			expectedBody:   `{"code":"INVALID_ARGUMENT","message":"Invalid argument provided"}`,
+			expectedBody:   `{"code":"INVALID_ARGUMENT","message":"Invalid msg_id"}`,
 		},
 		{
 			name: "when request is invalid, then write validation error",
@@ -115,7 +115,7 @@ func TestAPIHandler_GetAccount(t *testing.T) {
 				MsgID: "test_msgID",
 			},
 			expectedStatus: http.StatusBadRequest,
-			expectedBody:   `{"code":"INVALID_ARGUMENT","message":"Invalid argument provided"}`,
+			expectedBody:   `{"code":"INVALID_ARGUMENT","message":"Invalid account_id"}`,
 		},
 		{
 			name: "when request is valid and handler returns error, then write error",
