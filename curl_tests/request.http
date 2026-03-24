@@ -17,7 +17,7 @@ curl -X GET 'http://localhost:8080/accounts/1?msgID=4e01cff74f2585cbcdb38f66fb74
 ### Create Transaction
 curl -sS -X POST 'http://localhost:8080/transactions' \
   -H 'Content-Type: application/json' \
-  -d '{"msg_id":"4e01cff74f2585cbcdb38f66fb74533","reference_id":"1e01cff74f2585cbcdb38f66fb74003","account_id":1, "operation_type_id": 3, "amount": 20.00}'
+  -d '{"msg_id":"4e01cff74f2585cbcdb38f66fb74533","reference_id":"1e01cff74f2585cbcdb38f66fb74005","account_id":1, "operation_type_id": 3, "amount": 20.00}'
 
 
   pismo-account-1  | {"time":"2026-03-23T22:14:32.043184507Z","level":"INFO","msg":"both hashes","currHash":"7af65459c1dbff96eb2a6850ff5fa524f202a39f768bc2ee7a5989975ba5d98f","storedHash":"7af65459c1dbff96eb2a6850ff5fa524f202a39f768bc2ee7a5989975ba5d98f"}
