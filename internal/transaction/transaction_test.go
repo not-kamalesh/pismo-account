@@ -112,7 +112,7 @@ func TestTransactionHandler_Create(t *testing.T) {
 					tx.ID = 1
 				}).Return(nil).Once()
 			},
-			expectedResp: &dto.CreateTransactionResponse{TransactionID: 1},
+			expectedResp: &dto.CreateTransactionResponse{TransactionID: 1, Status: types.Success},
 			expectedErr:  nil,
 		},
 	}

@@ -28,6 +28,12 @@ func NewHandler(accountDAO storage.IAccountDao, transactionDao storage.ITransact
 	}
 }
 
+// Create - creates a Transaction based on the request
+// Check if transaction already exists based on reference_id - second layer of idempotent behaviour
+// if exists : return the existing transaction
+// if notExists:
+//   - Load account by account id
+//   - Insert Transaction in DB and return the created transaction
 func (h *transactionHandler) Create(ctx context.Context, req *dto.CreateTransactionRequest) (*dto.CreateTransactionResponse, error) {
 
 	// Load the transaction based on reference_id, if exists return txID
@@ -81,5 +87,6 @@ func (h *transactionHandler) Create(ctx context.Context, req *dto.CreateTransact
 
 	return &dto.CreateTransactionResponse{
 		TransactionID: newTxn.ID,
+		Status:        types.Success,
 	}, nil
 }

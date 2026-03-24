@@ -25,6 +25,7 @@ func NewHandler(accountDAO storage.IAccountDao) AccountHandler {
 	}
 }
 
+// Create : checks if the account already exists, if not inserts a account record
 func (h *accountHandler) Create(ctx context.Context, req *dto.CreateAccountRequest) (*dto.CreateAccountResponse, error) {
 
 	// Check if an account already exists with the given document number
@@ -56,6 +57,7 @@ func (h *accountHandler) Create(ctx context.Context, req *dto.CreateAccountReque
 	}, nil
 }
 
+// Get : Loads an account based on account_id and return it if exists
 func (h *accountHandler) Get(ctx context.Context, req *dto.GetAccountRequest) (*dto.GetAccountResponse, error) {
 
 	account, loadErr := h.dao.LoadByID(ctx, req.AccountID)
