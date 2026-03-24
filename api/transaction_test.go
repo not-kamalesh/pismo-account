@@ -11,6 +11,7 @@ import (
 	"github.com/not-kamalesh/pismo-account/common/types"
 	"github.com/not-kamalesh/pismo-account/dto"
 	"github.com/not-kamalesh/pismo-account/errors"
+	"github.com/not-kamalesh/pismo-account/internal/idempotencymgr"
 	"github.com/not-kamalesh/pismo-account/internal/transaction"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -79,10 +80,11 @@ func TestAPIHandler_CreateTransaction(t *testing.T) {
 
 			// setup mocks, create handler and execute the handler
 			mockTransactionHandler := new(transaction.MockTransactionHandler)
+			idempotencyMgr := idempotencymgr.NewInMemIdempotencyMgr()
 			if tt.setUpMocks != nil {
 				tt.setUpMocks(mockTransactionHandler)
 			}
-			api := NewAPIHandler(nil, nil, mockTransactionHandler)
+			api := NewAPIHandler(nil, nil, mockTransactionHandler, idempotencyMgr)
 			api.CreateTransaction(respWriter, httpReq)
 
 			// assert the expectations

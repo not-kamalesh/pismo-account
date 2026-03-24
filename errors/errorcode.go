@@ -10,4 +10,5 @@ const (
 	PismoErrorCodeUnauthenticated  PismoErrorCode = "UNAUTHENTICATED"
 	PismoErrorCodeInternal         PismoErrorCode = "INTERNAL"
 	PismoErrorCodeUnavailable      PismoErrorCode = "UNAVAILABLE"
+	PismoErrorCodeConflict         PismoErrorCode = "CONFLICT"
 )

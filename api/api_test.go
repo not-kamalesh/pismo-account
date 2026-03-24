@@ -15,7 +15,7 @@ import (
 
 func TestNewAPIHandler(t *testing.T) {
 	healthCheckHandler := &healthcheck.MockHealthCheck{}
-	apiHandler := NewAPIHandler(healthCheckHandler, nil, nil)
+	apiHandler := NewAPIHandler(healthCheckHandler, nil, nil, nil)
 	assert.NotNil(t, apiHandler)
 }
 
@@ -90,7 +90,7 @@ func TestAPIHandler_writeResponse(t *testing.T) {
 		t.Run(scenario.name, func(t *testing.T) {
 
 			respWriter := httptest.NewRecorder()
-			api := NewAPIHandler(nil, nil, nil)
+			api := NewAPIHandler(nil, nil, nil, nil)
 			api.writeResponse(respWriter, scenario.apiName, scenario.apiResp, scenario.apiErr, scenario.isNilResp)
 
 			// assert the expectations

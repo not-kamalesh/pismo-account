@@ -47,8 +47,9 @@ var (
 	ErrInvalidAmount        = New(PismoErrorCodeInvalidArgument, "Invalid amount, amount should be positive", http.StatusBadRequest)
 	ErrInvalidOperationType = New(PismoErrorCodeInvalidArgument, "Invalid operation_type_id", http.StatusBadRequest)
 
-	ErrNotFound         = New(PismoErrorCodeNotFound, "Requested resource not found", http.StatusNotFound)
-	ErrAlreadyExists    = New(PismoErrorCodeAlreadyExists, "Resource already exists", http.StatusConflict)
-	ErrPermissionDenied = New(PismoErrorCodePermissionDenied, "Permission denied", http.StatusForbidden)
-	ErrInternal         = New(PismoErrorCodeInternal, "Internal server error", http.StatusInternalServerError)
+	ErrNotFound            = New(PismoErrorCodeNotFound, "Requested resource not found", http.StatusNotFound)
+	ErrAlreadyExists       = New(PismoErrorCodeAlreadyExists, "Resource already exists", http.StatusConflict)
+	ErrPermissionDenied    = New(PismoErrorCodePermissionDenied, "Permission denied", http.StatusForbidden)
+	ErrInternal            = New(PismoErrorCodeInternal, "Internal server error", http.StatusInternalServerError)
+	ErrTransactionConflict = New(PismoErrorCodeConflict, "Transaction Processed with different payload", http.StatusConflict)
 )

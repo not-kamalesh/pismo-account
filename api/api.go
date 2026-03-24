@@ -9,6 +9,7 @@ import (
 	"github.com/not-kamalesh/pismo-account/errors"
 	"github.com/not-kamalesh/pismo-account/internal/account"
 	"github.com/not-kamalesh/pismo-account/internal/healthcheck"
+	"github.com/not-kamalesh/pismo-account/internal/idempotencymgr"
 	"github.com/not-kamalesh/pismo-account/internal/transaction"
 )
 
@@ -16,13 +17,20 @@ type APIHandler struct {
 	healthCheckHandler healthcheck.HealthCheckHandler
 	accountHandler     account.AccountHandler
 	transactionHandler transaction.TransactionHandler
+	idempotencyMgr     idempotencymgr.IdempotencyMgr
 }
 
-func NewAPIHandler(healthcheckHandler healthcheck.HealthCheckHandler, accountHandler account.AccountHandler, transactionHandler transaction.TransactionHandler) *APIHandler {
+func NewAPIHandler(healthcheckHandler healthcheck.HealthCheckHandler,
+	accountHandler account.AccountHandler,
+	transactionHandler transaction.TransactionHandler,
+	idempotencyMgr idempotencymgr.IdempotencyMgr,
+) *APIHandler {
+
 	apiHandler := &APIHandler{
 		healthCheckHandler: healthcheckHandler,
 		accountHandler:     accountHandler,
 		transactionHandler: transactionHandler,
+		idempotencyMgr:     idempotencyMgr,
 	}
 	return apiHandler
 }

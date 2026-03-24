@@ -15,6 +15,7 @@ import (
 	"github.com/not-kamalesh/pismo-account/api"
 	"github.com/not-kamalesh/pismo-account/internal/account"
 	"github.com/not-kamalesh/pismo-account/internal/healthcheck"
+	"github.com/not-kamalesh/pismo-account/internal/idempotencymgr"
 	"github.com/not-kamalesh/pismo-account/internal/transaction"
 	"github.com/not-kamalesh/pismo-account/server"
 	"github.com/not-kamalesh/pismo-account/storage"
@@ -49,11 +50,14 @@ func main() {
 	healthCheckHandler := healthcheck.NewHandler()
 	accountHandler := account.NewHandler(accountDao)
 	transctionHandler := transaction.NewHandler(accountDao, transactionDao)
-	apiHandler := api.NewAPIHandler(healthCheckHandler, accountHandler, transctionHandler)
+	idempotencyMgr := idempotencymgr.NewInMemIdempotencyMgr()
+	apiHandler := api.NewAPIHandler(healthCheckHandler, accountHandler, transctionHandler, idempotencyMgr)
 
 	// Register Routes and Handlers
 	r := mux.NewRouter()
+
 	apiRouter := r.PathPrefix("").Subrouter()
+	apiRouter.Use(recoveryMiddleware) // api panic recovary middleware
 	apiRouter.HandleFunc("/health_check", apiHandler.HealthCheck).Methods(http.MethodGet)
 	apiRouter.HandleFunc("/accounts", apiHandler.CreateAccount).Methods(http.MethodPost)
 	apiRouter.HandleFunc("/accounts/{account_id}", apiHandler.GetAccount).Methods(http.MethodGet)
@@ -98,4 +102,17 @@ func main() {
 	} else {
 		slog.Info("server shutdown gracefully")
 	}
+}
+
+// middleware to recovers from panics
+func recoveryMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			if err := recover(); err != nil {
+				slog.Error("panic occurred", "error", err)
+				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			}
+		}()
+		next.ServeHTTP(w, r)
+	})
 }
