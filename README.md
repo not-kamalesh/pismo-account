@@ -2,6 +2,18 @@
 
 Simple Transaction Routine service, which manages accounts and transactions associated with those accounts.
 
+## Description of the repository
+
+Simple Transaction Routine service, which manages accounts and transactions associated with those accounts.
+- An account can be created for a user by doing a KYC with a government document.
+- Once the account is created, users can view their account.
+- With the added accounts, any debit/credit transactions associated with the Cardholder can be registered using the Transaction endpoint.
+- The APIs are idempotent, meaning it will produce the same result for same request.
+- The Service can handle concurrent requests while keeping correctness.
+- Currently its a simple transaction insertion service.
+- New features to be released soon 😄
+
+
 ## What you need
 
 - Docker
